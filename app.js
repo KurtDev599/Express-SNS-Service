@@ -7,6 +7,8 @@ const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
 const passport = require('passport')
 
+const app = express()
+
 dotenv.config()
 
 app.use(morgan('dev'))
@@ -32,7 +34,6 @@ const authRouter = require('./routes/auth')
 
 const { sequelize } = require('./models')
 
-const app = express()
 app.set('port', process.env.PRT || 8081)
 app.set('view engine', 'html')
 nunjucks.configure('view', {
