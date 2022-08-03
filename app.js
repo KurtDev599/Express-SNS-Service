@@ -25,9 +25,8 @@ app.use(session({
     secur: false
   }
 }))
-
-app.use(passport.initialize)
-app.use(passport.session)
+app.use(passport.initialize())
+app.use(passport.session())
 
 const pageRouter = require('./routes/page')
 const authRouter = require('./routes/auth')
