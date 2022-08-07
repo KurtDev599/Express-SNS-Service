@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../models/user')
+const Follower = require('../models/follow')
 
 const { isLoggedIn } = require('./middlewares')
 const router = express.Router()
@@ -14,6 +15,16 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
       res.status(404).end()
     }
   } catch (error) {
+    console.error(error)
+    next(error)
+  }
+})
+
+router.delete('/:id/unfollow', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } })
+    await Follower.destroy({ where: { followingId: req.user.id } && { followerId: req.params.id } })
+  } catch (error)  {
     console.error(error)
     next(error)
   }
