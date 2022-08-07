@@ -23,7 +23,10 @@ router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
 router.delete('/:id/unfollow', isLoggedIn, async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { id: req.user.id } })
-    await Follower.destroy({ where: { followingId: req.user.id } && { followerId: req.params.id } })
+    if (user) {
+      await user.removeFollowing(parseInt(req.params.id, 10))
+      res.send('success')
+    }
   } catch (error)  {
     console.error(error)
     next(error)
