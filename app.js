@@ -13,6 +13,7 @@ dotenv.config()
 
 app.use(morgan('dev'))
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/img', express.static(path.join(__dirname, 'uploads')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -30,10 +31,13 @@ app.use(passport.session())
 
 const pageRouter = require('./routes/page')
 const authRouter = require('./routes/auth')
+const postRouter = require('./routes/post')
+const userRouter = require('./routes/user')
 
 const { sequelize } = require('./models')
+const passportConfig = require('./passport')
 
-app.set('port', process.env.PRT || 8081)
+app.set('port', process.env.PRT || 8001)
 app.set('view engine', 'html')
 nunjucks.configure('view', {
   express: app,
@@ -46,9 +50,12 @@ sequelize.sync({ force: false })
   .catch((err) => {
     console.log('database failed', err)
   })
+passportConfig()
 
 app.use('/', pageRouter)
 app.use('/auth', authRouter)
+app.use('/post', postRouter)
+app.use('/user', userRouter)
 
 app.use((err, req, res, next) => {
   const error = new Error(`${req.method}, ${req.url} 라우터가 없습니다.`)
